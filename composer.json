@@ -1,5 +1,5 @@
 {
-    "name": "CampaigningBureau/laravel-static-image-cache",
+    "name": "campaigningbureau/laravel-static-image-cache",
     "description": "store/cache external images as a static file",
     "license": "MIT",
     "authors": [
