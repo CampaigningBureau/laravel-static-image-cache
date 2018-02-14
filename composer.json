@@ -1,5 +1,5 @@
 {
-    "name": "mscharl/laravel-static-image-cache",
+    "name": "CampaigningBureau/laravel-static-image-cache",
     "description": "store/cache external images as a static file",
     "license": "MIT",
     "authors": [
@@ -20,7 +20,7 @@
 
     "autoload": {
         "psr-4": {
-            "MScharl\\LaravelStaticImageCache\\": "src"
+            "CampaigningBureau\\LaravelStaticImageCache\\": "src"
         },
         "files": [
             "src/helpers.php"
