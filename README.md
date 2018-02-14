@@ -6,7 +6,7 @@
 Add the service provider to the `app.php` provider array
 ```php
 [
-    MScharl\LaravelStaticImageCache\Provider\LaravelStaticImageCacheProvider::class,
+    CampaigningBureau\LaravelStaticImageCache\Provider\LaravelStaticImageCacheProvider::class,
 ]
 ```
 
