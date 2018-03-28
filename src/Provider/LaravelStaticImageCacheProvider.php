@@ -1,10 +1,10 @@
 <?php
 
-namespace MScharl\LaravelStaticImageCache\Provider;
+namespace CampaigningBureau\LaravelStaticImageCache\Provider;
 
 use Illuminate\Support\ServiceProvider;
-use MScharl\LaravelStaticImageCache\Classes\ImageProxy;
-use MScharl\LaravelStaticImageCache\Commands\ClearStaticCache;
+use CampaigningBureau\LaravelStaticImageCache\Classes\ImageProxy;
+use CampaigningBureau\LaravelStaticImageCache\Commands\ClearStaticCache;
 
 class LaravelStaticImageCacheProvider extends ServiceProvider
 {
@@ -38,19 +38,6 @@ class LaravelStaticImageCacheProvider extends ServiceProvider
         $this->commands([
             ClearStaticCache::class,
         ]);
-    }
-
-    /**
-     * Load the given routes file if routes are not already cached.
-     *
-     * @param  string  $path
-     * @return void
-     */
-    protected function loadRoutesFrom($path)
-    {
-        if (! $this->app->routesAreCached()) {
-            require $path;
-        }
     }
 
     public function provides()

@@ -1,13 +1,14 @@
 <?php
 
-namespace MScharl\LaravelStaticImageCache\Http\Controllers;
+namespace CampaigningBureau\LaravelStaticImageCache\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
 class ProxyController extends Controller
 {
-    public function image(Request $request) {
+    public function image(Request $request)
+    {
         $route = $request->route();
         $slug = $route->parameter('slug');
 

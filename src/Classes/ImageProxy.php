@@ -1,8 +1,10 @@
 <?php
 
-namespace MScharl\LaravelStaticImageCache\Classes;
+namespace CampaigningBureau\LaravelStaticImageCache\Classes;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Response;
+use Illuminate\Filesystem\Filesystem;
 
 class ImageProxy
 {
@@ -10,7 +12,7 @@ class ImageProxy
 
     function __construct()
     {
-        if(config('static-image-cache.enabled') === 'debug') {
+        if (config('static-image-cache.enabled') === 'debug') {
             $this->enabled = !config('app.debug');
         } else {
             $this->enabled = config('static-image-cache.enabled');
@@ -18,7 +20,10 @@ class ImageProxy
     }
 
     /**
+     * get the url to the caching service
+     *
      * @param string $url
+     *
      * @return string
      */
     public function getUrl(string $url): string
@@ -33,6 +38,7 @@ class ImageProxy
         $slug = collect([]);
         // first use the host
         $slug->push($parts['host']);
+
         // extract the uri directory path
         $slug->push(dirname($parts['path']));
 
@@ -44,24 +50,29 @@ class ImageProxy
         // add the filename
         $slug->push(basename($parts['path']));
 
-
-        $slug = $slug
-            // remove slashed at the beginning and end of the string
-            ->map(function (string $part) {
-                return trim($part, '/');
-            })
-            // create an uri
-            ->implode('/');
+        // remove slashed at the beginning and end of the string
+        $slug = $slug->map(function (string $part)
+        {
+            return trim($part, '/');
+        })
+                     ->implode('/');    // create an uri
 
         // create the laravel route
         return route('static-image-cache.image-proxy', ['slug' => $slug]);
     }
 
-    public function getOriginalUrl(string $uri): string
+    /**
+     * compute and return the original url from the given slug
+     *
+     * @param string $slug
+     *
+     * @return string
+     */
+    public function getOriginalUrl(string $slug): string
     {
         $matches = [];
         // extract the url parts from the uri
-        preg_match('#^((?:.(?!q64_))+)(?:\/q64_([^\/]+))?\/(.+)$#', $uri, $matches);
+        preg_match('#^((?:.(?!q64_))+)(?:\/q64_([^\/]+))?\/(.+)$#', $slug, $matches);
 
         $url = "https://" . $matches[1];
         $url .= '/' . $matches[3];
@@ -74,25 +85,81 @@ class ImageProxy
     }
 
     /**
+     * download the image from the web and return the response
+     *
      * @param string $url
+     *
      * @return \Psr\Http\Message\ResponseInterface
      */
     private function downloadImage(string $url): \Psr\Http\Message\ResponseInterface
     {
         $client = new Client();
+
         return $client->get($url);
     }
 
     /**
-     * @param string $uri
+     * @param string $slug
+     *
      * @return \Illuminate\Http\Response
      */
-    public function getImageResponse(string $uri): \Illuminate\Http\Response
+    public function getImageResponse(string $slug): \Illuminate\Http\Response
     {
-        $url = $this->getOriginalUrl($uri);
+        // compute original url from the slug
+        $url = $this->getOriginalUrl($slug);
 
+        // get image
         $response = $this->downloadImage($url);
 
+        // cache the image
+        $this->cacheImage($slug, $response);
+
         return response((string)$response->getBody(), $response->getStatusCode(), $response->getHeaders());
+    }
+
+    /**
+     * cache the image inside the defined caching directory.
+     *
+     * @param string   $slug
+     * @param Response $response
+     */
+    private function cacheImage($slug, $response)
+    {
+        $filesystem = resolve(Filesystem::class);
+
+        $filename = public_path(config('static-image-cache.cache_path_prefix') . "/" . $slug);
+
+        $file = $response->getBody();
+        $path = dirname($filename);
+
+        if (!$filesystem->isDirectory($path)) {
+            $filesystem->makeDirectory($path, 0777, true);
+        }
+
+        $filesystem->put($filename, $file);
+    }
+
+    /**
+     * statifies all image urls, whose domain matches one of the configured.
+     *
+     * @param string $text
+     *
+     * @return mixed|string
+     */
+    public function statifyText($text)
+    {
+        $text = collect(config('static-image-cache.statify_domains'))->reduce(function ($text, $domain)
+        {
+            return preg_replace_callback(
+                '#(https?:)?\/\/' . str_replace('.', '\.', $domain) . '\/(.+)\.(jpe?g|png|webp|gif|svg)#i',
+                function ($matches)
+                {
+                    return $this->getUrl($matches[0]);
+                },
+                $text
+            );
+        }, $text);
+
+        return $text;
     }
 }

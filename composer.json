@@ -6,6 +6,10 @@
         {
             "name": "Michael Scharl",
             "email": "michael.scharl@me.com"
+        },
+        {
+            "name": "Stefan Schindler",
+            "email": "stefan.schindler@campaigning-bureau.com"
         }
     ],
     "require": {

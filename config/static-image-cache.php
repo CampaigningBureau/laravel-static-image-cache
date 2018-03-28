@@ -26,4 +26,18 @@ return [
     */
 
     'cache_path_prefix' => 'cache/images',
+
+    /*
+    |--------------------------------------------------------------------------
+    | The domains to statify
+    |--------------------------------------------------------------------------
+    |
+    | Images from all domains defined here will be statified when calling the
+    | statify_text helper.
+    */
+    'statify_domains'   => [
+        'images.contentful.com',
+        'images.ctfassets.net',
+    ],
+
 ];

@@ -1,6 +1,6 @@
 <?php
 
-namespace MScharl\LaravelStaticImageCache\Commands;
+namespace CampaigningBureau\LaravelStaticImageCache\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
@@ -19,7 +19,7 @@ class ClearStaticCache extends Command
      *
      * @var string
      */
-    protected $description = 'Clear static image caches';
+    protected $description = 'Clear the static images cache.';
 
     /**
      * @var Filesystem
@@ -51,15 +51,14 @@ class ClearStaticCache extends Command
     }
 
     /**
-     * @param $storage_path
+     * @param string $storage_path
      */
     private function clearStorageDirectory($storage_path)
     {
         $storage_path = public_path($storage_path);
-        $this->comment("Clearing `{$storage_path}`…");
+        $this->comment("Clearing `{$storage_path}`...");
 
-        if($this->files->isDirectory($storage_path))
-        {
+        if ($this->files->isDirectory($storage_path)) {
             $this->files->deleteDirectory($storage_path, true);
         }
     }
