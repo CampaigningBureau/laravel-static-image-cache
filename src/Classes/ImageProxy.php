@@ -3,7 +3,7 @@
 namespace CampaigningBureau\LaravelStaticImageCache\Classes;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Filesystem\Filesystem;
 
 class ImageProxy
@@ -62,17 +62,22 @@ class ImageProxy
     }
 
     /**
-     * compute and return the original url from the given slug
+     * compute and return the original url from the given slug.
+     * returns false if the slug could not be parsed as expected
      *
      * @param string $slug
      *
-     * @return string
+     * @return string|boolean
      */
     public function getOriginalUrl(string $slug): string
     {
         $matches = [];
         // extract the url parts from the uri
         preg_match('#^((?:.(?!q64_))+)(?:\/q64_([^\/]+))?\/(.+)$#', $slug, $matches);
+
+        if (count($matches) < 4) {
+            return false;
+        }
 
         $url = "https://" . $matches[1];
         $url .= '/' . $matches[3];
@@ -89,16 +94,24 @@ class ImageProxy
      *
      * @param string $url
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return bool|\Psr\Http\Message\ResponseInterface
      */
-    private function downloadImage(string $url): \Psr\Http\Message\ResponseInterface
+    private function downloadImage(string $url)
     {
-        $client = new Client();
+        $guzzleClient = new Client();
 
-        return $client->get($url);
+        try {
+            $response = $guzzleClient->get($url);
+
+            return $response;
+        } catch (ClientException $exception) {
+            return false;
+        }
     }
 
     /**
+     * download the image, cache it and return it
+     *
      * @param string $slug
      *
      * @return \Illuminate\Http\Response
@@ -108,8 +121,17 @@ class ImageProxy
         // compute original url from the slug
         $url = $this->getOriginalUrl($slug);
 
+        if (!$url) {
+            return response('invalid image');
+        }
+
         // get image
         $response = $this->downloadImage($url);
+
+        // check for a valid response
+        if (!$response) {
+            return response('could not download image');
+        }
 
         // cache the image
         $this->cacheImage($slug, $response);
@@ -120,8 +142,8 @@ class ImageProxy
     /**
      * cache the image inside the defined caching directory.
      *
-     * @param string   $slug
-     * @param Response $response
+     * @param string                              $slug
+     * @param \Psr\Http\Message\ResponseInterface $response
      */
     private function cacheImage($slug, $response)
     {
