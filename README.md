@@ -1,5 +1,13 @@
 # laravel-static-image-cache
 
+## Changelog
+
+v3.0 requires Laravel 5.6 and at least PHP 7.1.3.
+
+Use `"campaigningbureau/laravel-static-image-cache": "^2.0"` for Laravel < 5.6
+
+
+
 > store/cache external images as a static file
 
 Replaces URIs by a proxy route.
