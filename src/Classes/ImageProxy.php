@@ -147,7 +147,7 @@ class ImageProxy
      */
     private function cacheImage($slug, $response)
     {
-        $filesystem = resolve(Filesystem::class);
+        $filesystem = \App::make(Filesystem::class);
 
         $filename = public_path(config('static-image-cache.cache_path_prefix') . "/" . $slug);
 
