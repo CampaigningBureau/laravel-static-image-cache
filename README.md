@@ -2,9 +2,11 @@
 
 ## Changelog
 
+v7.0 requires Laravel 7 and at least PHP 7.2.5
+
 v5.0 requires Laravel 6.0 and at least PHP 7.2
 
-Use `"campaigningbureau/laravel-static-image-cache": "^4.0"` for Laravel >= 6.0
+Use `"campaigningbureau/laravel-static-image-cache": "^4.0"` for Laravel < 6.0
 
 ---
 
