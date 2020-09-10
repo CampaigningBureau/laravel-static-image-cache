@@ -1,27 +1,5 @@
 # laravel-static-image-cache
 
-## Changelog
-
-v7.0 requires Laravel 7 and at least PHP 7.2.5
-
-v5.0 requires Laravel 6.0 and at least PHP 7.2
-
-Use `"campaigningbureau/laravel-static-image-cache": "^4.0"` for Laravel < 6.0
-
----
-
-v4.0 requires Laravel 5.8 and at least PHP 7.1.3.
-
-Use `"campaigningbureau/laravel-static-image-cache": "^3.0"` for Laravel >= 5.6 and Laravel < 5.8
-
----
-
-v3.0 requires Laravel 5.6 and at least PHP 7.1.3.
-
-Use `"campaigningbureau/laravel-static-image-cache": "^2.0"` for Laravel < 5.6
-
----
-
 > store/cache external images as a static file
 
 Replaces URIs by a proxy route.
@@ -35,6 +13,17 @@ If the requested file was already cached, it is instead directly returned by the
 ```
 composer require campaigningbureau/laravel-static-image-cache
 ```
+
+## Supported versions
+
+| Package version | Required Laravel version | Minimum PHP version |
+|-----------------|--------------------------|---------------------|
+| v8.0            | 8                        | 7.3.0               |
+| v7.0            | 7                        | 7.2.5               |
+| v5.0            | 6.0                      | 7.2                 |
+| v4.0            | 5.8                      | 7.1.3               |
+| v3.0            | 5.6                      | 7.1.3               |
+| v2.0            | < 5.6                     | 7.0                |
 
 ## Setup
 
@@ -86,6 +75,6 @@ php artisan static-image-cache:clear
 
 ## Upgrade guide
 
-### Fom v1.x to v2.0
+### From v1.x to v2.0
 
 all usages of `staticImage()` need to be replaced by the new `static_image()` function.
