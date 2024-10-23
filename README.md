@@ -18,12 +18,13 @@ composer require campaigningbureau/laravel-static-image-cache
 
 | Package version | Required Laravel version | Minimum PHP version |
 |-----------------|--------------------------|---------------------|
+| v10.1           | 10.x or 11.x             | 8.1                 |
 | v8.0            | 8                        | 7.3.0               |
 | v7.0            | 7                        | 7.2.5               |
 | v5.0            | 6.0                      | 7.2                 |
 | v4.0            | 5.8                      | 7.1.3               |
 | v3.0            | 5.6                      | 7.1.3               |
-| v2.0            | < 5.6                     | 7.0                |
+| v2.0            | < 5.6                    | 7.0                 |
 
 ## Setup
 
